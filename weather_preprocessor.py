@@ -1,3 +1,8 @@
+###
+# This script contains functions to parse and interpret weather data columns manuell before the knowledge of METAR data
+# Hence, it is no longer used
+###
+
 import pandas as pd
 
 
