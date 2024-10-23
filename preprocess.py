@@ -4,11 +4,24 @@ import time
 import pandas as pd
 import numpy as np
 
+
+
+from weather_preprocessor import parse_wind, parse_ceiling
+from weather_rem_based_preprocessor import metar_extraction
+
 timestamp = time.strftime('%Y%m%d%H%M%S')
+INVALID_VALUE = "999,9,9,9999,9" # indicates missing or invalid data from the weather station
 
 def weather_preprocessing(file_path, airport_filter):
     weather_data = pd.read_csv(file_path, low_memory=False)
-    selected_weather_features = ['STATION', 'DATE', 'WND', 'CIG', 'VIS', 'TMP', 'DEW', 'SLP']
+
+    # Drop rows where the Wind column equals "999,9,9,9999,9"
+    #weather_data = weather_data[(weather_data['WND'] != INVALID_VALUE) & (weather_data['CIG'] != INVALID_VALUE)]
+
+    #selected_weather_features = ['STATION', 'DATE', 'WND', 'CIG', 'VIS', 'TMP', 'DEW', 'SLP', 'REM']
+    # Drop rows where the 'REM' column starts with 'SYN'
+    weather_data = weather_data[~weather_data['REM'].str.startswith('SYN')]
+    selected_weather_features = ['STATION', 'DATE', 'REM']
     weather_data = weather_data[selected_weather_features]
     weather_data.rename(columns={
         'STATION': 'Station',
@@ -21,6 +34,32 @@ def weather_preprocessing(file_path, airport_filter):
         'SLP': 'SeaLevelPressure'
     }, inplace=True)
     weather_data['Station'] = airport_filter
+
+    # alternative way to parse weather data
+    weather_data['Date'] = pd.to_datetime(weather_data['Date'])
+    weather_data['Year'] = weather_data['Date'].dt.year
+    weather_data['Month'] = weather_data['Date'].dt.month
+    weather_data['Day'] = weather_data['Date'].dt.day
+
+    weather_data = weather_data.merge(
+        weather_data.apply(
+            lambda row: pd.Series(metar_extraction(row['REM'], day=row['Day'], month=row['Month'], year=row['Year'])),
+            axis=1
+        ),
+        left_index=True, right_index=True
+    )
+
+    #wind parsing
+   # weather_data[['Wind_Direction', 'Wind_Speed', 'Wind_Condition', 'Wind_Gust_Speed', 'Wind_Additional_Code']] = weather_data[
+   #     'Wind'].apply(lambda x: pd.Series(parse_wind(x)))
+    #weather_data.drop(columns=['Wind'], inplace=True)
+
+    #Ceiling parsing
+    #weather_data[['Ceiling_Height', 'Ceiling_Condition', 'Ceiling_Additional_Code', 'Celling_Visibility_Condition']] = weather_data['Ceiling'].apply(lambda x: pd.Series(parse_ceiling(x)))
+    #weather_data.drop(columns=['Ceiling'], inplace=True)
+
+
+    # save to csv
     weather_data.to_csv(timestamp+'_'+airport_filter + '_weather_data_'+'.csv', index=False)
 
 def flight_preprocessing(file_path, airport_filter, save_mode: str = 'append'):
@@ -58,4 +97,4 @@ def flight_multi_preprocessing(flight_data_dir, airport_filter, save_mode='appen
 port = 'LAX'
 flight_dir = './data/flight/'
 weather_preprocessing('./data/weather/2020/'+port.lower()+'_airport.csv', port)
-flight_multi_preprocessing(flight_dir, port, save_mode='append')
+#flight_multi_preprocessing(flight_dir, port, save_mode='append')
