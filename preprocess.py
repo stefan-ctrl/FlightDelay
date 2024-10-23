@@ -15,23 +15,14 @@ INVALID_VALUE = "999,9,9,9999,9" # indicates missing or invalid data from the we
 def weather_preprocessing(file_path, airport_filter):
     weather_data = pd.read_csv(file_path, low_memory=False)
 
-    # Drop rows where the Wind column equals "999,9,9,9999,9"
-    #weather_data = weather_data[(weather_data['WND'] != INVALID_VALUE) & (weather_data['CIG'] != INVALID_VALUE)]
-
-    #selected_weather_features = ['STATION', 'DATE', 'WND', 'CIG', 'VIS', 'TMP', 'DEW', 'SLP', 'REM']
-    # Drop rows where the 'REM' column starts with 'SYN'
+    # Drop rows where the 'REM' column starts with 'SYN' or 'SO' (these are synthetic reports)
     weather_data = weather_data[~weather_data['REM'].str.startswith('SYN')]
+    weather_data = weather_data[~weather_data['REM'].str.startswith('SO')]
     selected_weather_features = ['STATION', 'DATE', 'REM']
     weather_data = weather_data[selected_weather_features]
     weather_data.rename(columns={
         'STATION': 'Station',
         'DATE': 'Date',
-        'WND': 'Wind',
-        'CIG': 'Ceiling',
-        'VIS': 'Visibility',
-        'TMP': 'Temperature',
-        'DEW': 'DewPoint',
-        'SLP': 'SeaLevelPressure'
     }, inplace=True)
     weather_data['Station'] = airport_filter
 
@@ -41,23 +32,21 @@ def weather_preprocessing(file_path, airport_filter):
     weather_data['Month'] = weather_data['Date'].dt.month
     weather_data['Day'] = weather_data['Date'].dt.day
 
+    # Loop through each row in the DataFrame and extract features
+    #for index, row in weather_data.iterrows():
+    #    # Call metar_extraction once per row
+    #    extracted_features = metar_extraction(row['REM'], day=row['Day'], month=row['Month'], year=row['Year'])
+    #    # Assign the extracted features to new columns in the DataFrame
+    #    if extracted_features is not None:
+    #        for feature, value in extracted_features.items():
+    #            weather_data.at[index, feature] = value
+
+    # merge works, since data is sorted by date and time
     weather_data = weather_data.merge(
         weather_data.apply(
             lambda row: pd.Series(metar_extraction(row['REM'], day=row['Day'], month=row['Month'], year=row['Year'])),
             axis=1
-        ),
-        left_index=True, right_index=True
-    )
-
-    #wind parsing
-   # weather_data[['Wind_Direction', 'Wind_Speed', 'Wind_Condition', 'Wind_Gust_Speed', 'Wind_Additional_Code']] = weather_data[
-   #     'Wind'].apply(lambda x: pd.Series(parse_wind(x)))
-    #weather_data.drop(columns=['Wind'], inplace=True)
-
-    #Ceiling parsing
-    #weather_data[['Ceiling_Height', 'Ceiling_Condition', 'Ceiling_Additional_Code', 'Celling_Visibility_Condition']] = weather_data['Ceiling'].apply(lambda x: pd.Series(parse_ceiling(x)))
-    #weather_data.drop(columns=['Ceiling'], inplace=True)
-
+        ), left_index=True, right_index=True)
 
     # save to csv
     weather_data.to_csv(timestamp+'_'+airport_filter + '_weather_data_'+'.csv', index=False)

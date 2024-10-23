@@ -25,7 +25,7 @@ def metar_extraction(metar: str, day: int = 1, month: int = 1, year: int = 2024)
     features['Station'] = parsed_metar.station_id
 
     # 2. Day
-    features['Day'] = parsed_metar.time.day if parsed_metar.time else None
+    features['Metar_Day'] = parsed_metar.time.day if parsed_metar.time else None
 
     # 3. Hour
     features['Hour'] = parsed_metar.time.hour if parsed_metar.time else None
