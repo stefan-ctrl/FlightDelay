@@ -2,12 +2,8 @@ import os
 import time
 
 import pandas as pd
-import numpy as np
 
-
-
-from weather_preprocessor import parse_wind, parse_ceiling
-from weather_rem_based_preprocessor import metar_extraction
+from feature_scripts.weater_metar_feature_engineering import metar_extraction
 
 timestamp = time.strftime('%Y%m%d%H%M%S')
 INVALID_VALUE = "999,9,9,9999,9" # indicates missing or invalid data from the weather station
@@ -53,17 +49,26 @@ def weather_preprocessing(file_path, airport_filter):
 
 def flight_preprocessing(file_path, airport_filter, save_mode: str = 'append'):
     flight_data = pd.read_csv(file_path, low_memory=False)
+    # Drop rows
     flight_data.fillna({'DepDelay': 0, 'ArrDelay': 0}, inplace=True)
     flight_data.dropna(subset=['DepTime', 'ArrTime'], inplace=True)
 
+    # apply airport filter if applied
     if airport_filter != '' or airport_filter is not None:
         flight_data = flight_data[(flight_data['Origin'] == airport_filter) | (flight_data['Dest'] == airport_filter)]
 
+    # Drop columns
     selected_flight_features = ['Year', 'Month', 'DayofMonth', 'DayOfWeek', 'FlightDate', 'Reporting_Airline', 'Flight_Number_Reporting_Airline', 'Origin', 'Dest', 'CRSDepTime', 'DepTime', 'DepDelay', 'DepDel15', 'CRSArrTime', 'ArrTime', 'ArrDelay', 'ArrDel15', 'WeatherDelay']
     flight_data = flight_data[selected_flight_features]
 
 
-    core_name = timestamp+'_'+airport_filter + '_flight_data'
+
+    save_to_csv_file(airport_filter, file_path, flight_data, save_mode)
+    print(f'File {file_path} processed successfully')
+
+
+def save_to_csv_file(airport_filter, file_path, flight_data, save_mode):
+    core_name = timestamp + '_' + airport_filter + '_flight_data'
     if save_mode == 'append':
         saved_file_name = core_name + '.csv'
         if not os.path.exists(saved_file_name):
@@ -76,7 +81,6 @@ def flight_preprocessing(file_path, airport_filter, save_mode: str = 'append'):
         saved_file_name = core_name + '_' + file_name + '.csv'
         flight_data.to_csv(saved_file_name, index=False)
 
-    print(f'File {file_path} processed successfully')
 
 def flight_multi_preprocessing(flight_data_dir, airport_filter, save_mode='append'):
     filenames = sorted([f for f in os.listdir(flight_data_dir) if f.endswith('.csv')])
@@ -86,4 +90,4 @@ def flight_multi_preprocessing(flight_data_dir, airport_filter, save_mode='appen
 port = 'LAX'
 flight_dir = './data/flight/'
 weather_preprocessing('./data/weather/2020/'+port.lower()+'_airport.csv', port)
-#flight_multi_preprocessing(flight_dir, port, save_mode='append')
+flight_multi_preprocessing(flight_dir, port, save_mode='append')
