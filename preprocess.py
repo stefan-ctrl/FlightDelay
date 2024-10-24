@@ -3,7 +3,9 @@ import time
 
 import pandas as pd
 
+from feature_scripts.flight_feature_engineering import flight_feature_engineering
 from feature_scripts.weater_metar_feature_engineering import metar_extraction
+from plot_scripts.flight import visualize_delays
 
 timestamp = time.strftime('%Y%m%d%H%M%S')
 INVALID_VALUE = "999,9,9,9999,9" # indicates missing or invalid data from the weather station
@@ -61,9 +63,11 @@ def flight_preprocessing(file_path, airport_filter, save_mode: str = 'append'):
     selected_flight_features = ['Year', 'Month', 'DayofMonth', 'DayOfWeek', 'FlightDate', 'Reporting_Airline', 'Flight_Number_Reporting_Airline', 'Origin', 'Dest', 'CRSDepTime', 'DepTime', 'DepDelay', 'DepDel15', 'CRSArrTime', 'ArrTime', 'ArrDelay', 'ArrDel15', 'WeatherDelay']
     flight_data = flight_data[selected_flight_features]
 
-
+    # feature engineering
+    flight_data = flight_feature_engineering(flight_data)
 
     save_to_csv_file(airport_filter, file_path, flight_data, save_mode)
+    visualize_delays(flight_data)
     print(f'File {file_path} processed successfully')
 
 
@@ -90,4 +94,5 @@ def flight_multi_preprocessing(flight_data_dir, airport_filter, save_mode='appen
 port = 'LAX'
 flight_dir = './data/flight/'
 weather_preprocessing('./data/weather/2020/'+port.lower()+'_airport.csv', port)
+#flight_preprocessing(flight_dir + '2020_01.csv', port)
 flight_multi_preprocessing(flight_dir, port, save_mode='append')
