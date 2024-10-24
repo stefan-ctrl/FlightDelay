@@ -5,7 +5,6 @@ import pandas as pd
 
 from feature_scripts.flight_feature_engineering import flight_feature_engineering
 from feature_scripts.weater_metar_feature_engineering import metar_extraction
-from plot_scripts.flight import visualize_delays
 
 timestamp = time.strftime('%Y%m%d%H%M%S')
 INVALID_VALUE = "999,9,9,9999,9" # indicates missing or invalid data from the weather station
