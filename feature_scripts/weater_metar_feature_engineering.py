@@ -99,7 +99,36 @@ def metar_extraction(metar: str, day: int = 1, month: int = 1, year: int = 2024)
     features['Sea_Level_Pressure'] = parsed_metar.press_sea_level.value(
         'MB') if parsed_metar.press_sea_level else None
 
+    # 14. Snow Depth
     features['Snow_Depth'] = parsed_metar.snowdepth.value('M') if parsed_metar.snowdepth else None
+
+    # 15. Weather Conditions
+    if parsed_metar.weather:
+        weather_conditions = parsed_metar.weather
+        found_weather_intensity = None
+        found_weather_descriptor = None
+        found_weather_phenomenon = None
+        features['Weather_Intensity'] = None
+        features['Weather_Precipitation'] = None
+        features['Weather_Obscuration'] = None
+        features['Weather_Other'] = None
+
+        # Iterate through the weather conditions and check for keywords
+        for condition in weather_conditions:
+            code = condition[0]  # Extract the code
+            # Check for intensity
+            if code.startswith('+'):
+                features['Weather_Intensity'] = '+'
+            elif code.startswith('-'):
+                features['Weather_Intensity'] = '-'
+            else:
+                features['Weather_Intensity'] = 'o'
+
+            features['Weather_Precipitation'] = condition[2]
+            features['Weather_Obscuration'] = condition[3]  # Directly use the code as descriptor
+            features['Weather_Other'] = condition[4]
+
+
 
     return features
     #return features['Station'], features['Day'], features['Hour'], features['Minute'], features['Wind_Direction'], features['Wind_Speed'], features['Wind_Gusts'], features['Visibility'], features['Sky_Condition'], features['Temperature'], features['Dew_Point'], features['Altimeter'], features['Sea_Level_Pressure'], features['Snow_Depth'], features['Clouds_150'], features['Clouds_250']
