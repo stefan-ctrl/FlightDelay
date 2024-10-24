@@ -1,9 +1,52 @@
+# How to run
+
+
+## Get the Data
+see the data folder for more information
+
+## Install the requirements
+```bash
+pip install -r requirements.txt
+```
+
+## Preprocessing
+After you have optained the data, preprocess the data with the following script.
+
+```bash
+python preprocessing.py
+```
+
+## Merge the Data (Optional)
+Certain visualizations require the data to be merged. This can be done with the following script.
+
+```bash
+python merge_with_minimum_features.py
+```
+
+As the name suggests, this script only merges the data with the minimum features required for the visualizations. So most features are not included in the merged data.
+
+
+## Visualizations
+This is done for the preprocessed aswell as for the merged data. It shows first correlations and then the distribution of delays.
+
+```bash
+python visualize.py
+```
+
 # Data sources
 
 * Flight Delay Data: https://www.transtats.bts.gov/DL_SelectFields.aspx?gnoyr_VQ=FGJ&QO_fu146_anzr=b0-gvzr
   * January 2020
 * Weather Data: https://www.ncei.noaa.gov/access/search/data-search/global-hourly?pageNum=1&startDate=2020-01-01T00:00:00&endDate=2020-01-31T23:59:59&stations=72530094846
   *  for ten most listed airports
+
+# Limitations
+
+* The weather data from NOAA needs to be downloaded manually for each station. Hence, we have focused on the ten most listed airports in the flight data.
+* The weather data has a granularity of one hour. This means that we can only compare the weather data to the flight data on an hourly basis. This might not be the most accurate representation of the weather at the time of the flight and certain weather events might be missed.
+* The flight data includes all domestic flights in the US. This means that the data is very large and might not be representative of all flights worldwide.
+* We limit ourselves to the entire year of 2020. 
+  * All flights from one Airport only, since the weather data is only available for individual airports and gathering the data for all airports would be too time-consuming.
 
 # Task
 Copy from task description in ORTUS: https://estudijas.rtu.lv/mod/assign/view.php?id=4750923
@@ -19,14 +62,14 @@ Use uncertainty quantification techniques to account for unpredictable weather p
 
 ## Steps
 1. Data Collection:
-- [ ] Gather flight data, including departure times, arrival times, delay status (delayed or on-time), and flight numbers.
-- [ ] Gather historical weather data for the departure and destination airports at the relevant times.
+- [ x ] Gather flight data, including departure times, arrival times, delay status (delayed or on-time), and flight numbers.
+- [ x ] Gather historical weather data for the departure and destination airports at the relevant times.
 2. Data Preprocessing:
-- [ ] Clean the data to handle missing values, anomalies, and outliers.
-- [ ] Feature engineering: Create new features such as the difference between scheduled and actual departure times, or weather conditions at the time of departure.
+- [ x ] Clean the data to handle missing values, anomalies, and outliers.
+- [ x ] Feature engineering: Create new features such as the difference between scheduled and actual departure times, or weather conditions at the time of departure.
 3. Exploratory Data Analysis (EDA):
-- [ ] Visualize the distribution of delays and how they relate to weather conditions.
-- [ ] Analyze correlations between weather features (e.g., temperature, wind speed, precipitation) and flight delays.
+- [ x ] Visualize the distribution of delays and how they relate to weather conditions.
+- [ x ] Analyze correlations between weather features (e.g., temperature, wind speed, precipitation) and flight delays.
 4. Model Building:
 - [ ] Build a classification model (e.g., logistic regression, decision tree, random forest, or XGBoost) to predict whether a flight will be delayed.
 - [ ] Incorporate features that represent uncertainty in the weather data, such as the forecasted vs. actual weather conditions.
