@@ -93,4 +93,4 @@ port = 'LAX'
 flight_dir = './data/flight/'
 weather_preprocessing('./data/weather/2020/'+port.lower()+'_airport.csv', port)
 flight_preprocessing(flight_dir + '2020_01.csv', port)
-#flight_multi_preprocessing(flight_dir, port, save_mode='append')
+flight_multi_preprocessing(flight_dir, port, save_mode='append')
