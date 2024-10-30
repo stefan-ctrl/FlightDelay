@@ -62,14 +62,14 @@ Use uncertainty quantification techniques to account for unpredictable weather p
 
 ## Steps
 1. Data Collection:
-- [ x ] Gather flight data, including departure times, arrival times, delay status (delayed or on-time), and flight numbers.
-- [ x ] Gather historical weather data for the departure and destination airports at the relevant times.
+- [x] Gather flight data, including departure times, arrival times, delay status (delayed or on-time), and flight numbers.
+- [x] Gather historical weather data for the departure and destination airports at the relevant times.
 2. Data Preprocessing:
-- [ x ] Clean the data to handle missing values, anomalies, and outliers.
-- [ x ] Feature engineering: Create new features such as the difference between scheduled and actual departure times, or weather conditions at the time of departure.
+- [x] Clean the data to handle missing values, anomalies, and outliers.
+- [x] Feature engineering: Create new features such as the difference between scheduled and actual departure times, or weather conditions at the time of departure.
 3. Exploratory Data Analysis (EDA):
-- [ x ] Visualize the distribution of delays and how they relate to weather conditions.
-- [ x ] Analyze correlations between weather features (e.g., temperature, wind speed, precipitation) and flight delays.
+- [x] Visualize the distribution of delays and how they relate to weather conditions.
+- [x] Analyze correlations between weather features (e.g., temperature, wind speed, precipitation) and flight delays.
 4. Model Building:
 - [ ] Build a classification model (e.g., logistic regression, decision tree, random forest, or XGBoost) to predict whether a flight will be delayed.
 - [ ] Incorporate features that represent uncertainty in the weather data, such as the forecasted vs. actual weather conditions.
