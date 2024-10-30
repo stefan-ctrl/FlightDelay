@@ -28,7 +28,7 @@ def visualize_with_data_range(directory, date_range=None, shouldFilter=True):
 
 # Visualize both and layover the flight and weather data
 directory = './'  # Set the path to your directory containing the CSV files
-date_range = (pd.to_datetime('2020-01-01 00:00'), pd.to_datetime('2020-01-31 23:59'))  # Define a date range to filter data
+date_range = (pd.to_datetime('2020-01-01 00:00'), pd.to_datetime('2020-12-31 23:59'))  # Define a date range to filter data
 visualize_with_data_range(directory, date_range)
 
 # Merged data, has less features than the original data
