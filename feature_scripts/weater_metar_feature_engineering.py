@@ -63,7 +63,10 @@ def metar_extraction(metar: str, day: int = 1, month: int = 1, year: int = 2024)
         # Loop through each cloud layer and assign it to the correct altitude bucket
         for cloud in clouds:
             cloud_type = cloud[0]  # e.g., 'FEW', 'SCT', 'BKN'
-            cloud_altitude = cloud[1].value('FT')  # Altitude in feet
+            if cloud[1] is None:
+                print(f"Cloud layer {cloud_type} has no altitude information. Assume previous value")
+            else:
+                cloud_altitude = cloud[1].value('FT')  # Altitude in feet
 
             # Categorize the cloud altitude into the specified buckets
             if cloud_altitude < 5000:
