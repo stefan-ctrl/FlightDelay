@@ -56,7 +56,8 @@ def flight_preprocessing(file_path, airport_filter, save_mode: str = 'append'):
 
     # apply airport filter if applied
     if airport_filter != '' or airport_filter is not None:
-        flight_data = flight_data[(flight_data['Origin'] == airport_filter) | (flight_data['Dest'] == airport_filter)]
+        #flight_data = flight_data[(flight_data['Origin'] == airport_filter) | (flight_data['Dest'] == airport_filter)]
+        flight_data = flight_data[(flight_data['Origin'] == airport_filter)]
 
     # Drop columns
     selected_flight_features = ['Year', 'Month', 'DayofMonth', 'DayOfWeek', 'FlightDate', 'Reporting_Airline', 'Flight_Number_Reporting_Airline', 'Origin', 'Dest', 'CRSDepTime', 'DepTime', 'DepDelay', 'DepDel15', 'CRSArrTime', 'ArrTime', 'ArrDelay', 'ArrDel15', 'WeatherDelay']
@@ -89,7 +90,7 @@ def flight_multi_preprocessing(flight_data_dir, airport_filter, save_mode='appen
     for filename in filenames:
         flight_preprocessing(flight_data_dir + filename, airport_filter, save_mode=save_mode)
 
-port = 'LAX'
+port = 'BOS'
 flight_dir = './data/flight/'
 weather_preprocessing('./data/weather/2020/'+port.lower()+'_airport.csv', port)
 flight_preprocessing(flight_dir + '2020_01.csv', port)
