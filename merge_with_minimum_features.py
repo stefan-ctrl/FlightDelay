@@ -3,10 +3,10 @@ import pandas as pd
 from util.read_latest_flight_and_weather import read_latest_files
 
 def drop_to_minimum_weather(weather_df):
-    return weather_df[['Date', 'Weather_Intensity','Weather_Obscuration','Weather_Other','Weather_Precipitation']]
+    return weather_df[['Date', 'Weather_Intensity','Weather_Obscuration','Weather_Other','Weather_Precipitation', 'Wind_Direction', 'Wind_Gusts','Wind_Speed', 'Visibility']]
 
 def drop_to_minimum_flight(flight_df):
-    return flight_df[['FlightDepDateTime', 'DepDelayMin', 'Origin', 'Dest']]
+    return flight_df[['FlightDepDateTime', 'DepDelayMin', 'Origin', 'Dest', 'WeatherDelay']]
 
 def merge_with_minimum_features():
     flight_data, weather_data = read_latest_files('./')
