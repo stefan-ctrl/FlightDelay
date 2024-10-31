@@ -17,6 +17,10 @@ def merge_with_minimum_features():
     flight_data['FlightDepDateTime'] = pd.to_datetime(flight_data['FlightDepDateTime'])
     weather_data['Date'] = pd.to_datetime(weather_data['Date'])
 
+    # sort the dataframes by date
+    flight_data = flight_data.sort_values(by='FlightDepDateTime')
+    weather_data = weather_data.sort_values(by='Date')
+
 
     # Initialize variables
     weather_idx = 0  # Index to track the position in the weather dataset
