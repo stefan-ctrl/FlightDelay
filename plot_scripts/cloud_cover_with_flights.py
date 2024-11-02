@@ -57,7 +57,7 @@ def prepare_cloud_cover_data(weather_data):
     return cloud_cover_df
 
 
-def plot_cloud_cover_with_flight_delays(weather_data, flight_data):
+def plot_cloud_cover_with_flight_delays(weather_data, flight_data, airport, delay_type='', title_suffix='', save_base_name=''):
     """
     Plot cloud cover as horizontal lines and overlay flight delays.
 
@@ -71,7 +71,8 @@ def plot_cloud_cover_with_flight_delays(weather_data, flight_data):
     cloud_cover_df = prepare_cloud_cover_data(weather_data)
 
     plt.figure(figsize=(14, 8))
-    plt.title('Cloud Cover Levels and Flight Delays', fontsize=16)
+    title = f"[{airport}]{delay_type} Delays and Cloud Cover Levels ({title_suffix})"
+    plt.title(title)
 
     # Set y-ticks for cloud levels
     y_levels = np.arange(1, 6)  # y=1 for 0-5000, y=2 for 5000-10000, ..., y=5 for 20000-25000
@@ -105,4 +106,6 @@ def plot_cloud_cover_with_flight_delays(weather_data, flight_data):
     plt.xticks(rotation=45)
 
     plt.tight_layout()
-    plt.show()
+    #plt.show()
+    if save_base_name:
+        plt.savefig(f'{airport}_{save_base_name}_{title_suffix}.png', dpi=1000)
