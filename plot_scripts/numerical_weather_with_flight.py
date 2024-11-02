@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-def visualize_overlaid_flight_and_weather(flight_data, weather_data):
+def visualize_overlaid_flight_and_weather(flight_data, weather_data, airport, delay_type='', title_suffix='', save_base_name=''):
     """
     Overlay flight delays and weather conditions in a single plot.
 
@@ -20,7 +20,8 @@ def visualize_overlaid_flight_and_weather(flight_data, weather_data):
 
     # Create a figure
     plt.figure(figsize=(14, 8))
-    plt.title('Flight Delays and Weather Conditions', fontsize=16)
+    title = f"[{airport}]{delay_type} Delays and Weather Conditions ({title_suffix})"
+    plt.title(title)
 
     # Plot flight delays
     # Draw vertical lines where DepDelayMin > 0
@@ -29,7 +30,7 @@ def visualize_overlaid_flight_and_weather(flight_data, weather_data):
         plt.axvline(x=flight_time, color='red', linestyle='--', alpha=0.5)
 
     # Overlay temperature
-    sns.lineplot(data=weather_data['Temperature'], color='blue', label='Temperature (°C)', linewidth=2, alpha=0.7)
+    # sns.lineplot(data=weather_data['Temperature'], color='blue', label='Temperature (°C)', linewidth=2, alpha=0.7)
 
     # Overlay wind speed
     sns.lineplot(data=weather_data['Wind_Speed'], color='green', label='Wind Speed (km/h)', linewidth=2, alpha=0.7)
@@ -50,4 +51,6 @@ def visualize_overlaid_flight_and_weather(flight_data, weather_data):
     plt.legend()
 
     # Show the plot
-    plt.show()
+    #plt.show()
+    if save_base_name:
+        plt.savefig(f'{airport}_{save_base_name}_{title_suffix}.png', dpi=1000)
