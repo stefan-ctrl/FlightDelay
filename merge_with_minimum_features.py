@@ -31,11 +31,24 @@ def merge_with_minimum_features():
         flight_time = flight['FlightDepDateTime']
 
         # Find the closest preceding weather entry
-        # Find the closest preceding weather entry without using abs
-        while weather_idx < len(weather_data) - 1 and \
-                (weather_data.iloc[weather_idx + 1]['Date'] <= flight_time and
-                 flight_time - weather_data.iloc[weather_idx + 1]['Date'] < flight_time - weather_data.iloc[weather_idx][
-                     'Date']):
+        weather_time = weather_data.iloc[weather_idx]['Date']
+        weather_time_next = weather_time
+        preferred_weather_time = weather_time
+        if weather_idx < len(weather_data) - 1:
+            weather_time_next = weather_data.iloc[weather_idx + 1]['Date']
+
+        # Find the closest weather entry to the flight time
+        if flight_time is None:
+            continue
+
+        diff_1 = abs((flight_time - weather_time).total_seconds())
+        while diff_1 > 3600:
+            weather_idx += 1
+            weather_time = weather_data.iloc[weather_idx]['Date']
+            diff_1 = abs((flight_time - weather_time).total_seconds())
+        diff_2 = abs((flight_time - weather_time_next).total_seconds())
+        if diff_2 < diff_1:
+            preferred_weather_time = weather_time_next
             weather_idx += 1
 
         # Merge the flight data with the current weather entry
