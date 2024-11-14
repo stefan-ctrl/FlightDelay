@@ -1,7 +1,5 @@
 import arviz as az
 import pandas as pd
-import numpy as np
-import pymc as pm
 from matplotlib import pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -10,13 +8,16 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import accuracy_score, precision_score, recall_score, \
-    roc_auc_score, roc_curve
+    roc_auc_score, roc_curve, f1_score
 from sklearn.impute import SimpleImputer
 from sklearn.tree import DecisionTreeClassifier
 from xgboost import XGBClassifier
 
+
+# FlightDepDateTime,Weather_Intensity,Weather_Obscuration,Weather_Precipitation,Wind_Direction,Wind_Gusts,Wind_Speed,Visibility,isDelayed
+
 categorical_cols = ['Weather_Intensity', 'Weather_Obscuration', 'Weather_Precipitation']
-numerical_cols = ['Wind_Direction', 'Wind_Gusts', 'Wind_Speed', 'Visibility', 'Hour', 'DayOfWeek', 'Month']
+numerical_cols = ['Wind_Direction', 'Wind_Gusts', 'Wind_Speed', 'Visibility']
 
 import numpy as np
 
@@ -67,24 +68,15 @@ def prepare_data(X_train, X_test):
 ## load the data and remove some attributes
 def process_data():
     # Load the data
-    data = pd.read_csv('../merged_flight_weather_data.csv', low_memory=False)
+    data = pd.read_csv('../preprocessing/data_preprocessing.csv', low_memory=False)
     # Drop columns with all missing values
     data = data.loc[:, data.notna().any()]
-    # Create target variable
-    data['IsDelayed'] = (data['DepDelayMin'] > 0).astype(int)
-    # Create a binary target variable based on DepDelayMin
-    data['Delayed'] = np.where(data['DepDelayMin'] > 15, 1, 0)
     # Convert FlightDepDateTime to datetime and extract relevant features
     data['FlightDepDateTime'] = pd.to_datetime(data['FlightDepDateTime'])
-    data['Hour'] = data['FlightDepDateTime'].dt.hour
-    data['DayOfWeek'] = data['FlightDepDateTime'].dt.dayofweek
-    data['Month'] = data['FlightDepDateTime'].dt.month
-    # Drop columns not needed for prediction
-    data = data.drop(['DepDelayMin', 'FlightDepDateTime', 'Date', 'Dest', 'WeatherDelay', 'Origin'], axis=1)
 
     # Define features and target
-    X = data.drop('Delayed', axis=1)
-    y = data['Delayed']
+    X = data.drop('isDelayed', axis=1)
+    y = data['isDelayed']
 
     return X, y
 
@@ -137,6 +129,7 @@ def build_models(X, y, test_size=0.3, random_state=42, suffix=""):
         print(f"Accuracy: {accuracy:.4f}")
         print(f"Precision: {precision:.4f}")
         print(f"Recall: {recall:.4f}")
+        print(f'F1-Score: {f1_score(y_test, y_pred):.4f}')
         print(f"ROC AUC: {roc_auc:.4f}")
         print(f"Confusion Matrix:")
         print(pd.crosstab(y_test, y_pred, rownames=['Actual'], colnames=['Predicted']))
@@ -153,29 +146,6 @@ def build_models(X, y, test_size=0.3, random_state=42, suffix=""):
     # Adjust layout to prevent overlap
     plt.tight_layout()
     plt.show()
-
-# Bayesian Logistic Regression Model with PyMC
-def bayesian_logistic_regression(X, y, test_size=0.3, random_state=42, num_samples=50, suffix=""):
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state=random_state)
-    X_train, X_test = prepare_data(X_train, X_test)  # Ensure all categorical data is encoded and standardized
-    y_train = y_train.values if hasattr(y_train, 'values') else y_train  # Ensure y_train is a numpy array
-
-    # Bayesian logistic regression with PyMC
-    with pm.Model() as logistic_model:
-        # Priors for the coefficients and intercept
-        intercept = pm.Normal('intercept', mu=0, sigma=10)
-        coeffs = pm.Normal('coeffs', mu=0, sigma=10, shape=(X_train.shape[1],))
-
-        # Logistic regression model
-        p = pm.invlogit(intercept + pm.math.dot(X_train, coeffs))
-
-        # Likelihood (Bernoulli with observed data)
-        y_obs = pm.Bernoulli('y_obs', p=p, observed=y_train)
-
-        # Inference: sample from the posterior using NUTS
-        trace = pm.sample(num_samples, return_inferencedata=True, tune=1000)
-
-    return trace
 
 
 def plot_trace(suffix=""):

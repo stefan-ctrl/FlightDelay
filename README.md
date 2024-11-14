@@ -9,15 +9,21 @@ see the data folder for more information
 pip install -r requirements.txt
 ```
 
-## Preprocessing
-After you have optained the data, preprocess the data with the following script.
+## Exploratory Data Analysis
+In this chapter we will explore the data and visualize the data. This is done with the following script.
+The output of this analysis is a subset of data used for the model building
+
+
+### Preprocessing Raw Data
+After you have obtained the data, preprocess the data with the following script.
 
 ```bash
-python preprocessing.py
+python preprocessing_raw.py
 ```
 
-## Merge the Data (Optional)
-Certain visualizations require the data to be merged. This can be done with the following script.
+### Merge the Data
+Merging the data is needed to assign weather and flight dates into a single dataset.#
+Furthermore, certain visualisation needs the data to be merged. This can be done with the following script.
 
 ```bash
 python merge_with_minimum_features.py
@@ -25,12 +31,29 @@ python merge_with_minimum_features.py
 
 As the name suggests, this script only merges the data with the minimum features required for the visualizations. So most features are not included in the merged data.
 
-
-## Visualizations
+### Visualizations
 This is done for the preprocessed aswell as for the merged data. It shows first correlations and then the distribution of delays.
 
 ```bash
 python visualize.py
+```
+
+## Model Building
+
+### Preprocessing
+The preprocessing script is used to prepare the data for the model building.
+It built on the output of the exploratory data analysis and the merged data.
+Compared to the previous scripts, this one is done with Jupiter notebook.
+
+```bash
+jupyter notebook ./preprocessing/data_preprocessing.ipynb
+```
+
+### Model Building
+The model building is done with the following script. It uses the preprocessed data to build a model.
+
+```bash
+python ./model_building/build.py
 ```
 
 # Data sources
