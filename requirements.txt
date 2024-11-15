@@ -1,8 +1,10 @@
 matplotlib==3.9.2
 metar==1.11.0
-numpy==2.1.2
+numpy~=1.26.4
 pandas==2.2.3
 seaborn==0.13.2
 xgboost==2.1.2
 
 scikit-learn~=1.5.2
+arviz~=0.20.0
+pymc~=5.18.0
