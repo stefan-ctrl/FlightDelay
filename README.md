@@ -47,13 +47,17 @@ Compared to the previous scripts, this one is done with Jupiter notebook.
 
 ```bash
 jupyter notebook ./preprocessing/data_preprocessing.ipynb
+
 ```
 
 ### Model Building
 The model building is done with the following script. It uses the preprocessed data to build a model.
+We have to files. The python file is used for the fast testing of different models.
+The jupyter notebook is used for the final model building and evaluation.
 
 ```bash
 python ./model_building/build.py
+juypter notebook ./model_building/model_building.ipynb
 ```
 
 # Data sources
@@ -94,20 +98,20 @@ Use uncertainty quantification techniques to account for unpredictable weather p
 - [x] Visualize the distribution of delays and how they relate to weather conditions.
 - [x] Analyze correlations between weather features (e.g., temperature, wind speed, precipitation) and flight delays.
 4. Model Building:
-- [ ] Build a classification model (e.g., logistic regression, decision tree, random forest, or XGBoost) to predict whether a flight will be delayed.
-- [ ] Incorporate features that represent uncertainty in the weather data, such as the forecasted vs. actual weather conditions.
+- [x] Build a classification model (e.g., logistic regression, decision tree, random forest, or XGBoost) to predict whether a flight will be delayed.
+- [x] Incorporate features that represent uncertainty in the weather data, such as the forecasted vs. actual weather conditions.
 5. Incorporating Uncertainty:
-- [ ] Use probabilistic models such as Bayesian methods to handle uncertainty in weather forecasts.
-- [ ] Alternatively, use Monte Carlo simulations to quantify uncertainty in weather predictions.
+- [x] Use probabilistic models such as Bayesian methods to handle uncertainty in weather forecasts.
+- [x] Alternatively, use Monte Carlo simulations to quantify uncertainty in weather predictions.
 - [ ] Evaluate the model's performance by comparing deterministic predictions (certain) with probabilistic predictions (uncertain).
 6. Model Evaluation:
-- [ ] Evaluate the model using accuracy, precision, recall, and the ROC curve.
-- [ ] Additionally, evaluate the impact of uncertainty in the weather data on the model's performance.
-- [ ] Discuss the trade-off between accuracy and certainty in predictions.
+- [x] Evaluate the model using accuracy, precision, recall, and the ROC curve.
+- [x] Additionally, evaluate the impact of uncertainty in the weather data on the model's performance.
+- [x] Discuss the trade-off between accuracy and certainty in predictions.
 7. Task Deliverables:
-- [ ] A Jupyter notebook (or Python script) that includes the full analysis.
-- [ ] Visualizations that show how uncertainty in weather data impacts flight delay predictions.
-- [ ] A report discussing the model's performance, the role of uncertainty, and potential improvements.
+- [x] A Jupyter notebook (or Python script) that includes the full analysis.
+- [x] Visualizations that show how uncertainty in weather data impacts flight delay predictions.
+- [x] A report discussing the model's performance, the role of uncertainty, and potential improvements.
 
 ## Bonus (Optional):
 * Implement ensemble methods (e.g., bagging or boosting) to improve predictions under uncertain conditions.
